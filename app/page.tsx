@@ -61,7 +61,7 @@ export default function Home() {
       <header className="site-header">
         <div className="header-inner">
           <a className="brand" href="#inicio" aria-label="Festival Internacional de Series Ría de Vigo">
-            <img src="/images/logo.png" alt="Festival Internacional de Series Ría de Vigo" />
+            <img src="/images/logo.png" alt="" aria-hidden="true" />
           </a>
 
           <button
