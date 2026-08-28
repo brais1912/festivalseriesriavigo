@@ -1,7 +1,7 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
 
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 
 type ProgrammeItem = {
   time: string;
@@ -112,6 +112,7 @@ export default function Home() {
   const [formStatus, setFormStatus] = useState<'idle' | 'error' | 'success'>('idle');
   const [lightbox, setLightbox] = useState<ProgrammeDay | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const programmePanelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const updateProgress = () => {
@@ -164,13 +165,28 @@ export default function Home() {
     setFormStatus('success');
   }
 
+  function handleProgrammeDayChange(index: number) {
+    setActiveDay(index);
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const panel = programmePanelRef.current;
+        if (!panel) return;
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const stickyOffset = window.innerWidth <= 720 ? 188 : 110;
+        const targetTop = panel.getBoundingClientRect().top + window.scrollY - stickyOffset;
+        window.scrollTo({ top: Math.max(0, targetTop), behavior: reduceMotion ? 'auto' : 'smooth' });
+        panel.focus({ preventScroll: true });
+      });
+    });
+  }
+
   const selectedDay = programme[activeDay];
 
   return (
     <>
       <a className="skip-link" href="#contenido">Saltar al contenido</a>
 
-      <header className="site-header">
+      <header className={`site-header ${menuOpen ? 'menu-active' : ''}`}>
         <div className="scroll-progress" aria-hidden="true" style={{ transform: `scaleX(${scrollProgress})` }} />
         <div className="header-inner content-wide">
           <a className="brand" href="#inicio" aria-label="Festival Internacional de Series Ría de Vigo — inicio">
@@ -187,19 +203,29 @@ export default function Home() {
             aria-controls="main-navigation"
             onClick={() => setMenuOpen((open) => !open)}
           >
-            <span />
-            <span />
+            <span className="menu-button-label">{menuOpen ? 'CERRAR' : 'MENÚ'}</span>
+            <span className="menu-button-lines" aria-hidden="true"><i /><i /></span>
           </button>
 
           <nav id="main-navigation" className={`main-nav ${menuOpen ? 'is-open' : ''}`} aria-label="Navegación principal">
+            <div className="mobile-nav-intro" aria-hidden="true">
+              <span>03 · SEASON</span>
+              <p>EXPLORA EL FESTIVAL</p>
+            </div>
             <div className="nav-primary">
-              {navItems.map(([label, href]) => (
-                <a href={href} key={label} onClick={() => setMenuOpen(false)}>{label}</a>
+              {navItems.map(([label, href], index) => (
+                <a href={href} key={label} onClick={() => setMenuOpen(false)}>
+                  <small>0{index + 1}</small><span>{label}</span>
+                </a>
               ))}
             </div>
             <a className="nav-accreditation" href="#industria" onClick={() => setMenuOpen(false)}>
-              ÁREA INDUSTRIA <span aria-hidden="true">↗</span>
+              ÁREA INDUSTRIA <span aria-hidden="true">→</span>
             </a>
+            <div className="mobile-nav-footer">
+              <p><strong>10—12 JUNIO 2026</strong><span>O TINGLADO DO PORTO · VIGO</span></p>
+              <div><a href="https://www.instagram.com/festivaldeseriesriadevigo" target="_blank" rel="noreferrer">IG →</a><a href="https://www.tiktok.com/@riadevigoseriesfest" target="_blank" rel="noreferrer">TK →</a></div>
+            </div>
           </nav>
         </div>
       </header>
@@ -214,7 +240,7 @@ export default function Home() {
               <h1><span>Historias</span><span>que cruzan</span><span>océanos.</span></h1>
               <p className="tagline">Tres días de estrenos, talento e industria frente al Atlántico.</p>
               <div className="hero-actions">
-                <a className="hero-link hero-link-primary" href="#programa">DESCUBRIR EL PROGRAMA <span aria-hidden="true">↘</span></a>
+                <a className="hero-link hero-link-primary" href="#programa">DESCUBRIR EL PROGRAMA <span aria-hidden="true">↓</span></a>
                 <a className="hero-link" href="#festival">CONOCER EL FESTIVAL <span aria-hidden="true">→</span></a>
               </div>
             </div>
@@ -291,7 +317,7 @@ export default function Home() {
                   aria-controls="programme-panel"
                   aria-selected={activeDay === index}
                   className={activeDay === index ? 'is-active' : ''}
-                  onClick={() => setActiveDay(index)}
+                  onClick={() => handleProgrammeDayChange(index)}
                 >
                   <span>{day.date}</span>
                   <strong>{day.short}</strong>
@@ -300,28 +326,42 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="programme-layout" id="programme-panel" role="tabpanel" aria-labelledby={`tab-day-${activeDay}`}>
-              <div className="programme-list" aria-live="polite">
-                {selectedDay.items.map((item, index) => (
-                  <article className="programme-row" key={`${selectedDay.date}-${item.time}-${item.title}`}>
-                    <time>{item.time}</time>
-                    <div>
-                      <h3>{item.title}</h3>
-                      <p>{item.detail}</p>
-                    </div>
-                    <span className={`programme-kind ${item.kind}`}>
-                      {item.kind === 'industry' ? 'INDUSTRIA' : item.kind === 'screening' ? 'VISIONADO' : 'EVENTO'}
-                    </span>
-                    <small>0{index + 1}</small>
-                  </article>
-                ))}
+            <div
+              className="programme-layout"
+              id="programme-panel"
+              role="tabpanel"
+              aria-labelledby={`tab-day-${activeDay}`}
+              ref={programmePanelRef}
+              tabIndex={-1}
+            >
+              <div className="programme-main" key={selectedDay.date}>
+                <div className="programme-current" aria-live="polite">
+                  <span>AHORA MOSTRANDO</span>
+                  <strong>{selectedDay.label}</strong>
+                  <small>{selectedDay.items.length} ACTIVIDADES</small>
+                </div>
+                <div className="programme-list">
+                  {selectedDay.items.map((item, index) => (
+                    <article className="programme-row" key={`${selectedDay.date}-${item.time}-${item.title}`}>
+                      <time>{item.time}</time>
+                      <div>
+                        <h3>{item.title}</h3>
+                        <p>{item.detail}</p>
+                      </div>
+                      <span className={`programme-kind ${item.kind}`}>
+                        {item.kind === 'industry' ? 'INDUSTRIA' : item.kind === 'screening' ? 'VISIONADO' : 'EVENTO'}
+                      </span>
+                      <small>0{index + 1}</small>
+                    </article>
+                  ))}
+                </div>
               </div>
 
               <aside className="programme-poster">
                 <p>PROGRAMA ORIGINAL</p>
                 <button type="button" onClick={() => setLightbox(selectedDay)} aria-label={`Ampliar el programa del ${selectedDay.label.toLowerCase()}`}>
                   <img src={selectedDay.image} alt={`Cartel del programa del ${selectedDay.label.toLowerCase()}`} width="911" height="911" loading="lazy" />
-                  <span>AMPLIAR <b aria-hidden="true">↗</b></span>
+                  <span>AMPLIAR <b aria-hidden="true">→</b></span>
                 </button>
                 <small>La programación puede estar sujeta a cambios.</small>
               </aside>
@@ -393,7 +433,7 @@ export default function Home() {
               <div><span>FECHA LÍMITE</span><strong>30 DE ABRIL</strong></div>
               <div><span>FORMATO</span><strong>SERIES + VERTICAL</strong></div>
             </div>
-            <a className="text-link" href="#contacto">SOLICITAR INFORMACIÓN <span aria-hidden="true">↗</span></a>
+            <a className="text-link" href="#contacto">SOLICITAR INFORMACIÓN <span aria-hidden="true">→</span></a>
           </div>
         </section>
 
@@ -455,7 +495,7 @@ export default function Home() {
             <h2>Donde el mar<br /><em>se junta con las estrellas.</em></h2>
             <div>
               <span>RÍA DE VIGO · GALICIA</span>
-              <a href="#contacto">PLANEA TU VISITA <b aria-hidden="true">↗</b></a>
+              <a href="#contacto">PLANEA TU VISITA <b aria-hidden="true">→</b></a>
             </div>
           </div>
         </section>
@@ -483,7 +523,7 @@ export default function Home() {
                   <small>0{index + 1}</small>
                   <strong>{supporter.name}</strong>
                   <span>{supporter.detail}</span>
-                  <b aria-hidden="true">↗</b>
+                  <b aria-hidden="true">→</b>
                 </a>
               ))}
             </div>
@@ -496,7 +536,7 @@ export default function Home() {
               <p className="section-kicker">08 · HABLEMOS</p>
               <h2>Tu próxima historia<br /><em>puede empezar aquí.</em></h2>
               <p>Festival, industria, pitching, prensa o acreditaciones. Cuéntanos qué necesitas y continuaremos la conversación por correo.</p>
-              <a href="mailto:hola@riadevigoseriesfest.com">hola@riadevigoseriesfest.com <span aria-hidden="true">↗</span></a>
+              <a href="mailto:hola@riadevigoseriesfest.com">hola@riadevigoseriesfest.com <span aria-hidden="true">→</span></a>
             </div>
 
             <form className="contact-form" onSubmit={handleSubmit} noValidate>
@@ -532,7 +572,7 @@ export default function Home() {
             <p>SIGUE LA HISTORIA</p>
             <div>
               {socialLinks.map(([name, url]) => (
-                <a href={url} target="_blank" rel="noreferrer" key={name}>{name} <span aria-hidden="true">↗</span></a>
+                <a href={url} target="_blank" rel="noreferrer" key={name}>{name} <span aria-hidden="true">→</span></a>
               ))}
             </div>
           </div>
