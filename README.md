@@ -4,12 +4,12 @@ Responsive festival website built from the visual direction and public content o
 
 ## Features
 
-- Responsive single-page layout
-- Mobile navigation
-- Embedded festival recap video
-- 2026 programme, industry, pitching, and highlights sections
-- Contact form with client-side validation
-- Social, sponsor, and legal sections
+- Premium responsive editorial layout in the festival's blue-and-gold identity
+- Glass navigation, mobile menu, subtle motion, and reduced-motion support
+- Structured, accessible day-by-day 2026 programme with original poster views
+- Dedicated public, industry, pitching, archive, destination, and aftermovie sections
+- Static-safe contact flow that prepares an email in the visitor's mail client
+- Institutional supporters, social channels, sponsor links, and legal references
 - Local webfonts and optimized project assets
 - Open Graph and X/Twitter sharing metadata
 

@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
 
-const title = 'Festival Internacional de Series Ría de Vigo';
+const title = 'Ría de Vigo · Festival Internacional de Series 2026';
 const description =
-  'Festival Internacional de Series Ría de Vigo. Visionados, estrenos, coloquios, industria audiovisual y networking los días 10, 11 y 12 de junio de 2026.';
+  'Estrenos, talento e industria frente al Atlántico. Festival Internacional de Series Ría de Vigo, del 10 al 12 de junio de 2026.';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://festivalseriesriavigo.vercel.app'),
@@ -20,9 +20,9 @@ export const metadata: Metadata = {
     images: [
       {
         url: '/og.png',
-        width: 1729,
-        height: 910,
-        alt: 'Festival Internacional de Series Ría de Vigo — 10, 11 y 12 junio 2026',
+        width: 1731,
+        height: 909,
+        alt: 'Festival Internacional de Series Ría de Vigo — 10–12 junio 2026 · Vigo, Galicia',
       },
     ],
   },
