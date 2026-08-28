@@ -1,7 +1,7 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 const programDays = [
   { day: 'MIÉRCOLES 10 JUNIO', date: '10 JUN', image: '/images/program-wed.jpg' },
@@ -71,6 +71,21 @@ const sponsors = [
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [formStatus, setFormStatus] = useState<'idle' | 'error' | 'success'>('idle');
+  const [lightbox, setLightbox] = useState<(typeof programDays)[number] | null>(null);
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setLightbox(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [lightbox]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -181,12 +196,17 @@ export default function Home() {
               </div>
             </header>
             <div className="program-grid">
-              {programDays.map((item, index) => (
+              {programDays.map((item) => (
                 <article className="program-card" key={item.day}>
-                  <div className="program-image">
+                  <button
+                    type="button"
+                    className="program-image"
+                    onClick={() => setLightbox(item)}
+                    aria-label={`Abrir programa del ${item.day.toLowerCase()} a pantalla completa`}
+                  >
                     <img src={item.image} alt={`Programa del ${item.day.toLowerCase()}`} width="911" height="911" loading="lazy" />
-                    <span className="program-index">0{index + 1}</span>
-                  </div>
+                    <span className="program-zoom" aria-hidden="true">AMPLIAR <span>↗</span></span>
+                  </button>
                   <div className="program-card-copy">
                     <p>{item.date}</p>
                     <h3>{item.day}</h3>
@@ -386,6 +406,29 @@ export default function Home() {
           <p>©Derechos de autor. Todos los derechos reservados.</p>
         </div>
       </footer>
+
+      {lightbox && (
+        <div
+          className="program-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Programa del ${lightbox.day.toLowerCase()} a pantalla completa`}
+          onClick={(e) => { if (e.target === e.currentTarget) setLightbox(null); }}
+        >
+          <button
+            type="button"
+            className="program-lightbox-close"
+            onClick={() => setLightbox(null)}
+            aria-label="Cerrar programa"
+          >
+            CERRAR <span aria-hidden="true">✕</span>
+          </button>
+          <div className="program-lightbox-body">
+            <p className="program-lightbox-label">{lightbox.date} · {lightbox.day}</p>
+            <img src={lightbox.image} alt={`Programa del ${lightbox.day.toLowerCase()}`} />
+          </div>
+        </div>
+      )}
     </>
   );
 }
