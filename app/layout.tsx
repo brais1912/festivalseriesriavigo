@@ -6,6 +6,7 @@ const description =
   'Festival Internacional de Series Ría de Vigo. Visionados, estrenos, coloquios, industria audiovisual y networking los días 10, 11 y 12 de junio de 2026.';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://festivalseriesriavigo.vercel.app'),
   title,
   description,
   icons: {
