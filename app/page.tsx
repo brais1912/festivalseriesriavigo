@@ -1,7 +1,7 @@
 'use client';
+/* eslint-disable @next/next/no-img-element */
 
 import { FormEvent, useState } from 'react';
-import Image from 'next/image';
 
 const programDays = [
   { day: 'MIÉRCOLES 10 JUNIO', date: '10 JUN', image: '/images/program-wed.jpg' },
@@ -89,7 +89,7 @@ export default function Home() {
       <header className="site-header">
         <div className="header-inner">
           <a className="brand" href="#inicio" aria-label="Festival Internacional de Series Ría de Vigo">
-            <Image src="/images/logo.png" alt="" aria-hidden="true" width={911} height={530} priority />
+            <img src="/images/logo.png" alt="" aria-hidden="true" width="911" height="530" fetchPriority="high" />
           </a>
 
           <button
@@ -184,7 +184,7 @@ export default function Home() {
               {programDays.map((item, index) => (
                 <article className="program-card" key={item.day}>
                   <div className="program-image">
-                    <Image src={item.image} alt={`Programa del ${item.day.toLowerCase()}`} width={911} height={911} sizes="(max-width: 640px) 100vw, 33vw" />
+                    <img src={item.image} alt={`Programa del ${item.day.toLowerCase()}`} width="911" height="911" loading="lazy" />
                     <span className="program-index">0{index + 1}</span>
                   </div>
                   <div className="program-card-copy">
@@ -201,7 +201,7 @@ export default function Home() {
         <section className="feature-section experience-section" id="edicion-2025">
           <div className="content content-wide feature-grid">
             <div className="feature-visual">
-              <Image src="/images/experience.jpg" alt="Coloquio del festival con actores invitados" width={768} height={768} sizes="(max-width: 900px) 100vw, 50vw" />
+              <img src="/images/experience.jpg" alt="Coloquio del festival con actores invitados" width="768" height="768" loading="lazy" />
               <span>FESTIVAL · VIGO</span>
             </div>
             <div className="feature-copy">
@@ -223,7 +223,7 @@ export default function Home() {
         <section className="feature-section industry-section" id="industria">
           <div className="content content-wide feature-grid feature-grid-reverse">
             <div className="feature-visual">
-              <Image src="/images/industry.jpg" alt="Panel profesional de la industria audiovisual" width={768} height={768} sizes="(max-width: 900px) 100vw, 50vw" />
+              <img src="/images/industry.jpg" alt="Panel profesional de la industria audiovisual" width="768" height="768" loading="lazy" />
               <span>INDUSTRY · NETWORKING</span>
             </div>
             <div className="feature-copy">
@@ -241,7 +241,7 @@ export default function Home() {
         <section className="feature-section pitching-section" id="pitching">
           <div className="content content-wide feature-grid">
             <div className="feature-visual">
-              <Image src="/images/pitching.jpg" alt="Claqueta cinematográfica preparada para un proyecto" width={768} height={768} sizes="(max-width: 900px) 100vw, 50vw" />
+              <img src="/images/pitching.jpg" alt="Claqueta cinematográfica preparada para un proyecto" width="768" height="768" loading="lazy" />
               <span>OPEN CALL · 2026</span>
             </div>
             <div className="feature-copy">
@@ -269,7 +269,7 @@ export default function Home() {
               {highlights.map((item, index) => (
                 <article className="highlight-card" key={item.title}>
                   <div className="highlight-image">
-                    <Image src={item.image} alt="" width={768} height={768} sizes="(max-width: 640px) 100vw, (max-width: 1180px) 50vw, 25vw" />
+                    <img src={item.image} alt="" width="768" height="768" loading="lazy" />
                     <span>0{index + 1}</span>
                   </div>
                   <h3>{item.title}</h3>
@@ -337,9 +337,9 @@ export default function Home() {
             <p className="section-label">INSTITUCIONES Y ENTIDADES</p>
             <h2 id="collaborators-title">COLABORAN</h2>
             <div className="sponsor-logo-grid">
-              <Image src="/images/sponsor-xunta.png" alt="Xunta de Galicia y Xacobeo 2027" width={500} height={480} sizes="(max-width: 640px) 70vw, 25vw" />
-              <Image src="/images/sponsor-depo.png" alt="Deputación de Pontevedra, Rías Baixas" width={500} height={500} sizes="(max-width: 640px) 70vw, 25vw" />
-              <Image src="/images/sponsor-vigo.png" alt="Concello de Vigo" width={500} height={500} sizes="(max-width: 640px) 70vw, 25vw" />
+              <img src="/images/sponsor-xunta.png" alt="Xunta de Galicia y Xacobeo 2027" width="500" height="480" loading="lazy" />
+              <img src="/images/sponsor-depo.png" alt="Deputación de Pontevedra, Rías Baixas" width="500" height="500" loading="lazy" />
+              <img src="/images/sponsor-vigo.png" alt="Concello de Vigo" width="500" height="500" loading="lazy" />
             </div>
           </div>
         </section>
@@ -379,7 +379,7 @@ export default function Home() {
 
       <footer className="site-footer">
         <div className="content content-wide footer-inner">
-          <a className="footer-brand" href="#inicio" aria-label="Volver al inicio"><Image src="/images/logo.png" alt="" aria-hidden="true" width={911} height={530} /></a>
+          <a className="footer-brand" href="#inicio" aria-label="Volver al inicio"><img src="/images/logo.png" alt="" aria-hidden="true" width="911" height="530" loading="lazy" /></a>
           <nav aria-label="Navegación en pie de página">
             <a href="#inicio">INICIO</a><a href="#vertical">VERTICAL SERIES PITCH</a><a href="#pitching">PITCHING</a><a href="#industria">ACREDITACIÓN INDUSTRIA</a><a href="#contacto">CONTACTO</a><a href="#edicion-2025">EDICIÓN 2025</a>
           </nav>
